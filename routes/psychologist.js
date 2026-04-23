@@ -13,7 +13,7 @@ const notificationController = require("../controller/notification");
 const reportController = require("../controller/report");
 const SettlementTransactionController = require("../controller/settlementTransaction");
 const { getBooking, psychologistController, adminReportPsychologistController } = require("../controller/reportPsychologist");
-
+const { getChatUsers, getChatMessages, sendChat } = require('../controller/ChatController');
 
 //appointmment
 router.use(authController.authenticateToken);
@@ -56,7 +56,10 @@ router.patch("/reportPsychologist/:id", adminReportPsychologistController.update
 
 router.post("/start/call", startCall);
 
-
+//Chat
+router.get('/chat',getChatUsers)
+router.get('/chat/messages/:receiverId',getChatMessages)
+router.post('/chat',sendChat)
 
 
 module.exports = router;

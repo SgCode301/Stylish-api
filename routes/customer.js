@@ -16,7 +16,7 @@ const { userFollowController } = require("../controller/follow");
 const notificationController = require("../controller/notification");
 const reportController = require("../controller/report");
 const { getBooking, adminReportPsychologistController } = require("../controller/reportPsychologist");
-
+const { getChatUsers, getChatMessages, sendChat } = require('../controller/ChatController');
 
 //appointmment
 router.use(authController.authenticateToken);
@@ -92,5 +92,11 @@ router.patch('/reportPsychologist/:id', adminReportPsychologistController.update
 
 //delete account 
 router.delete("/delete-account",userController.deleteAccount)
+
+
+//Chat
+router.get('/chat',getChatUsers)
+router.get('/chat/messages/:receiverId',getChatMessages)
+router.post('/chat',sendChat)
 
 module.exports = router;
