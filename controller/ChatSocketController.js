@@ -10,16 +10,20 @@ const Chat = require('../models/ChatMessage');
  */
 
 function authenticateSocket(socket, next) {
-  const token = socket.handshake.query.token;
+  const token = socket.handshake.query.token || socket.handshake.auth?.token;
+  
   if (!token) {
+    console.log("❌ Authentication failed: Token missing");
     return next(new Error('Authentication error: token missing'));
   }
   try {
     const decoded = jwt.verify(token, config.jwt.jwtSecret);
     // Save the user ID on the socket object for future use.
     socket.userId = decoded._id;
+    console.log("✅ Authenticated user:", socket.userId);
     return next();
   } catch (err) {
+    console.log("❌ Authentication failed: Invalid token", err.message);
     return next(new Error('Authentication error'));
   }
 }

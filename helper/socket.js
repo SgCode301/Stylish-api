@@ -1,28 +1,24 @@
-const  socket  =  require("socket.io");
-const audioCallHandlers  =  require("../helper/audioCall");
-const {authenticateSocket,chatHandlers} = require("../helper/chat");
-const  videoCallHandlers  =  require("../helper/videoCall");
+const socket = require("socket.io");
+const chatSocketController = require("../controller/ChatSocketController");
 const socketUserStatusHandlers = require("./socketUserStatusHandlers");
+const {authenticateSocket} = require("../controller/ChatSocketController");
+const initializeSocket = (server) => {
+  const io = socket(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+  });
 
-const  initializeSocket  =  (server) =>{
-     const  io  =  socket(server , {
-         cors: {
-           origin: "*",
-           methods: ["GET", "POST"],
-         },
-     })
-    io.use(authenticateSocket);
-     io.on("connection" , (socket)=>{
-             console.log("some-one connected  successfully")
-            //  audioCallHandlers(io, socket);
-            //  videoCallHandlers(io, socket);
-            //  chatHandlers(io, socket);
-            socketUserStatusHandlers(io, socket);
-            
-           
+  chatSocketController(io);
+   io.use(authenticateSocket);
+  io.on("connection", (socket) => {
+    console.log("New connection established:", socket.id);
+    
+    socketUserStatusHandlers(io, socket);
+  });
 
-     })
-     return io
-}
+  return io;
+};
 
-module.exports  =  initializeSocket
+module.exports = initializeSocket;
